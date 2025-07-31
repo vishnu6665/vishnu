@@ -1,24 +1,102 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Registration Page</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Registration Form Validation</title>
 </head>
 <body>
-  <h2>Registration Form</h2>
-  <form action="/submit" method="post">
-    <label for="firstname">First Name:</label><br>
-    <input type="text" id="firstname" name="firstname" required><br><br>
 
-    <label for="lastname">Last Name:</label><br>
-    <input type="text" id="lastname" name="lastname" required><br><br>
+  <h2>Register</h2>
+  <form id="registrationForm" novalidate>
+    <label for="username">Username:</label><br />
+    <input type="text" id="username" name="username" required /><br />
+    <div id="usernameError" style="color: red;"></div>
 
-    <label for="email">Email:</label><br>
-    <input type="email" id="email" name="email" required><br><br>
+    <label for="email">Email:</label><br />
+    <input type="email" id="email" name="email" required /><br />
+    <div id="emailError" style="color: red;"></div>
 
-    <label for="password">Password:</label><br>
-    <input type="password" id="password" name="password" required><br><br>
+    <label for="password">Password:</label><br />
+    <input type="password" id="password" name="password" required /><br />
+    <div id="passwordError" style="color: red;"></div>
 
-    <input type="submit" value="Register">
+    <label for="confirmPassword">Confirm Password:</label><br />
+    <input type="password" id="confirmPassword" name="confirmPassword" required /><br />
+    <div id="confirmPasswordError" style="color: red;"></div>
+
+    <label>
+      <input type="checkbox" id="terms" name="terms" />
+      I accept the Terms and Conditions
+    </label><br />
+    <div id="termsError" style="color: red;"></div><br />
+
+    <button type="submit">Register</button>
   </form>
+
+  <script>
+    const form = document.getElementById('registrationForm');
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent form submission
+      
+      // Clear previous errors
+      clearErrors();
+
+      // Get form values
+      const username = form.username.value.trim();
+      const email = form.email.value.trim();
+      const password = form.password.value;
+      const confirmPassword = form.confirmPassword.value;
+      const termsChecked = form.terms.checked;
+
+      let valid = true;
+
+      if (username.length < 3) {
+        showError('usernameError', 'Username must be at least 3 characters long.');
+        valid = false;
+      }
+
+      if (!validateEmail(email)) {
+        showError('emailError', 'Please enter a valid email address.');
+        valid = false;
+      }
+
+      if (password.length < 6) {
+        showError('passwordError', 'Password must be at least 6 characters long.');
+        valid = false;
+      }
+
+      if (password !== confirmPassword) {
+        showError('confirmPasswordError', 'Passwords do not match.');
+        valid = false;
+      }
+
+      if (!termsChecked) {
+        showError('termsError', 'You must accept the Terms and Conditions.');
+        valid = false;
+      }
+
+      if (valid) {
+        alert('Registration successful!');
+        form.reset();
+      }
+    });
+
+    function showError(id, message) {
+      document.getElementById(id).textContent = message;
+    }
+
+    function clearErrors() {
+      const errorElements = document.querySelectorAll('div[id$="Error"]');
+      errorElements.forEach(el => el.textContent = '');
+    }
+
+    function validateEmail(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(email.toLowerCase());
+    }
+  </script>
+
 </body>
 </html>
